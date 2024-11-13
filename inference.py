@@ -76,6 +76,28 @@ def overlay_heatmap_on_image(original_img_path, heatmap_img_path, output_img_pat
     cv2.imwrite(output_img_path, overlay_image)
 
 
+def forward(image, condition):
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    model = setup_model(device)
+
+    transform = transforms.Compose([
+        transforms.Resize((256, 256)),
+        transforms.ToTensor(),
+        transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+    ])
+    img = transform(image)
+
+    img = img.unsqueeze(0).to(device)
+    one_hot_condition = torch.zeros((1, 4), device=device)
+    one_hot_condition[0, condition] = 1
+    model.eval()
+    with torch.no_grad():
+        pred_saliency = model(img, one_hot_condition)
+
+    pred_saliency = pred_saliency.squeeze().cpu().numpy()
+    return pred_saliency
+
+
 def main():
     parser = argparse.ArgumentParser(description='Saliency Map Prediction')
     parser.add_argument('--img_path', type=str, required=True)
