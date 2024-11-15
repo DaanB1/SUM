@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 
 from net.models.SUM import SUM
 from net.configs.config_setting import setting_config
+from validation import device
 
 
 def setup_model(device):
@@ -97,6 +98,31 @@ def forward(image, condition):
     pred_saliency = pred_saliency.squeeze().cpu().numpy()
     return pred_saliency
 
+
+class SUM():
+
+    def __init__(self):
+        self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+        self.model = setup_model(self.device)
+
+    def forward(self, image_tensor, condition=1):
+        transform = transforms.Compose([
+            transforms.Resize((256, 256)),
+            transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+        ])
+        img = transform(image_tensor)
+        batch, seq, channels, height, width = img.shape
+
+        img.view(batch * seq, channels, height, width)
+        img = img.to(device)
+        one_hot_condition = torch.zeros((1, 4), device=device)
+        one_hot_condition[0, condition] = 1
+        self.model.eval()
+        with torch.no_grad():
+            pred_saliency = self.model(img, one_hot_condition)
+
+        pred_saliency = pred_saliency.view(batch, seq, channels, height, width)
+        return pred_saliency
 
 def main():
     parser = argparse.ArgumentParser(description='Saliency Map Prediction')
