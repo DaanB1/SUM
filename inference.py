@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 
 from net.models.SUM import SUM
 from net.configs.config_setting import setting_config
-from validation import device
+#from validation import device
 
 
 def setup_model(device):
