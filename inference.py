@@ -114,8 +114,8 @@ class SUMModel():
         batch, seq, channels, height, width = img.shape
 
         img.view(batch * seq, channels, height, width)
-        img = img.to(device)
-        one_hot_condition = torch.zeros((1, 4), device=device)
+        img = img.to(self.device)
+        one_hot_condition = torch.zeros((1, 4), device=self.device)
         one_hot_condition[0, condition] = 1
         self.model.eval()
         with torch.no_grad():
