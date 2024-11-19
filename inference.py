@@ -99,7 +99,7 @@ def forward(image, condition):
     return pred_saliency
 
 
-class SUM():
+class SUMModel():
 
     def __init__(self):
         self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
