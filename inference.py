@@ -111,10 +111,11 @@ class SUMModel():
             transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
         ])
         img = transform(image_tensor)
-        batch, seq, channels, height, width = img.shape
+        batch, seq, channels, height, width = img.size()
 
         img.view(batch * seq, channels, height, width)
         img = img.to(self.device)
+        print(img.shape)
         one_hot_condition = torch.zeros((1, 4), device=self.device)
         one_hot_condition[0, condition] = 1
         self.model.eval()
