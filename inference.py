@@ -115,13 +115,14 @@ class SUMModel():
 
         img = img.view(batch * seq, channels, height, width)
         img = img.to(self.device)
-        print(img.shape)
+        print("Shape before", img.shape)
         one_hot_condition = torch.zeros((1, 4), device=self.device)
         one_hot_condition[0, condition] = 1
         self.model.eval()
         with torch.no_grad():
             pred_saliency = self.model(img, one_hot_condition)
 
+        print("Shape after", pred_saliency.shape)
         pred_saliency = pred_saliency.view(batch, seq, channels, height, width)
         return pred_saliency
 
