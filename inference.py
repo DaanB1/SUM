@@ -123,7 +123,7 @@ class SUMModel():
             pred_saliency = self.model(img, one_hot_condition)
 
         print("Shape after", pred_saliency.shape)
-        pred_saliency = pred_saliency.view(batch, seq, channels, height, width)
+        pred_saliency = pred_saliency.view(batch, seq, 1, height, width)
         return pred_saliency
 
 def main():
